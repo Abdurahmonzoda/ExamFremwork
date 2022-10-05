@@ -50,5 +50,12 @@ namespace WebApi.Controllers
             var challenge = await _challengeService.DeleteChallenge(id);
             return challenge;
         }
+        [HttpGet("WithGroups")]
+        public async Task<Response<List<GetChallengeWithGroups>>> GetWithGroups()
+        {
+            var challenge = await _challengeService.GetChallengeWithGroups();
+            return challenge;
+        }
+
     }
 }

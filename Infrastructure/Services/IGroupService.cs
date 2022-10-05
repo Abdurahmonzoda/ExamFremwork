@@ -18,5 +18,7 @@ namespace Infrastructure.Services
 
         Task<Response<List<GetGtoupWithChallengeNameDto>>> GetGroupWithChallengeName();
         Task<Response<AddGroupDto>> UpdateGroup(AddGroupDto group);
+        Task<Response<List<GetGroupWithParticipants>>> GetGroupWithParticipants();
+
     }
 }

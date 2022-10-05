@@ -58,5 +58,12 @@ namespace WebApi.Controllers
             return group;
         }
 
+        [HttpGet("WithParticipants")]
+        public async Task<Response<List<GetGroupWithParticipants>>> GetWithParticipants()
+        {
+            var group = await _groupService.GetGroupWithParticipants();
+            return group;
+        }
+
     }
 }

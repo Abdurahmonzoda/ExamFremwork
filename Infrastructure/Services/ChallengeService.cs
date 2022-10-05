@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -95,6 +96,40 @@ namespace Infrastructure.Services
             }
         }
 
-        
+        public async Task<Response<List<GetChallengeWithGroups>>> GetChallengeWithGroups()
+        {
+            try
+            {
+                var result = await (
+                    from ch in _context.Challenges
+                    select new GetChallengeWithGroups
+                    {
+                        Description = ch.Description,
+                        Id = ch.Id,
+                        Title = ch.Title,
+                        Groups = (from g in _context.Groups
+                                  where g.ChallangeId == ch.Id
+                                  select new GetGroupDto()
+                                  {
+                                      ChallangeId = g.ChallangeId,
+                                      GroupNick = g.GroupNick,
+                                      NeededMember = g.NeededMember,
+                                      TeamSlogan = g.TeamSlogan,
+                                      Id = g.Id
+                                  }).ToList(),
+
+                    }).ToListAsync();
+
+                return new Response<List<GetChallengeWithGroups>>(result);
+            }
+            catch(Exception ex)
+            {
+                return new Response<List<GetChallengeWithGroups>>(System.Net.HttpStatusCode.InternalServerError,ex.Message);
+            }
+        }
+
+
+
+
     }
 }

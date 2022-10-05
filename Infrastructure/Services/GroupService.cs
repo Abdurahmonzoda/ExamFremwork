@@ -125,5 +125,36 @@ namespace Infrastructure.Services
                 return new Response<List<GetGtoupWithChallengeNameDto>>(System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+        public async Task<Response<List<GetGroupWithParticipants>>> GetGroupWithParticipants()
+        {
+            try
+            {
+                var participants = await (from gr in _context.Groups
+                                          select new GetGroupWithParticipants()
+                                          {
+                                              Id = gr.Id,
+                                              GroupNick = gr.GroupNick,
+                                              ChallangeId = gr.ChallangeId,
+                                              NeededMember = gr.NeededMember,
+                                              TeamSlogan = gr.TeamSlogan,
+                                              Participants = (from pr in _context.Participants
+                                                              where gr.Id == pr.GroupId
+                                                              select new GetParticipantDto()
+                                                              {
+                                                                  Id = pr.Id,
+                                                                  FullName = pr.FullName,
+                                                                  Email = pr.Email,
+                                                                  Phone = pr.Phone,
+                                                                  GroupId = pr.GroupId,
+                                                                  LocationId = pr.LocationId
+                                                              }).ToList()
+                                          }).ToListAsync();
+                return new Response<List<GetGroupWithParticipants>>(participants);
+            }
+            catch(Exception ex)
+            {
+                return new Response<List<GetGroupWithParticipants>>(System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }
