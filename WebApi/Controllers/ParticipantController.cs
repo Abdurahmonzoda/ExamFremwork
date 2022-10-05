@@ -23,6 +23,12 @@ namespace WebApi.Controllers
             var participant = await _participantService.GetParticipants();
             return participant;
         }
+        [HttpGet("WithGropName")]
+        public async Task<Response<List<GetParticipantWithGroupName>>> GetWithGroupName()
+        {
+            var participant = await _participantService.GetParticipantWithGroupName();
+            return participant;
+        }
 
         [HttpGet("{id}")]
         public async Task<Response<Participant>> Get(int id)

@@ -16,5 +16,6 @@ namespace Infrastructure.Services
         Task<Response<Participant>> GetParticipantById(int id);
         Task<Response<List<GetParticipantDto>>> GetParticipants();
         Task<Response<AddParticipantDto>> UpdateLocation(AddParticipantDto location);
+        Task<Response<List<GetParticipantWithGroupName>>> GetParticipantWithGroupName(); 
     }
 }

@@ -15,6 +15,8 @@ namespace Infrastructure.Services
         Task<Response<string>> DeleteGroup(int id);
         Task<Response<Group>> GetGroupById(int id);
         Task<Response<List<GetGroupDto>>> GetGroups();
+
+        Task<Response<List<GetGtoupWithChallengeNameDto>>> GetGroupWithChallengeName();
         Task<Response<AddGroupDto>> UpdateGroup(AddGroupDto group);
     }
 }

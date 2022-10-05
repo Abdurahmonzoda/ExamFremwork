@@ -101,6 +101,29 @@ namespace Infrastructure.Services
             }
         }
 
-       
+        public async Task<Response<List<GetGtoupWithChallengeNameDto>>> GetGroupWithChallengeName()
+        {
+            try
+            {
+                var group = await (from gr in _context.Groups
+                                   join ch in _context.Challenges
+                                   on gr.ChallangeId equals ch.Id
+                                   select new GetGtoupWithChallengeNameDto
+                                   {
+                                       ChallengeId = ch.Id,
+                                       ChallengeName = ch.Title,
+                                       GroupNick = gr.GroupNick,
+                                       NeededMember = gr.NeededMember,
+                                       TeamSlogan = gr.TeamSlogan, 
+                                       Id = ch.Id
+
+                                   }).ToListAsync();
+                return new Response<List<GetGtoupWithChallengeNameDto>>(group); 
+            }
+            catch(Exception ex)
+            {
+                return new Response<List<GetGtoupWithChallengeNameDto>>(System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }

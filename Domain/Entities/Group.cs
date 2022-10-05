@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,12 +18,12 @@ namespace Domain.Entities
         public bool NeededMember { get; set; }
         [MaxLength(300)]
         public string TeamSlogan { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
         public virtual List<Participant> Participants { get; set; }
 
         public Group()
         {
-            CreatedAt = DateTime.Now;
+            CreatedAt = DateTimeOffset.UtcNow;
         }
     }
 }

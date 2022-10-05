@@ -109,5 +109,34 @@ namespace Infrastructure.Services
             }
         }
 
+        public async Task<Response<List<GetParticipantWithGroupName>>> GetParticipantWithGroupName()
+        {
+            try
+            {
+                var participant = await (from pr in _context.Participants
+                                         join gr in _context.Groups
+                                         on pr.GroupId equals gr.Id
+                                         join lo in _context.Locations
+                                         on pr.LocationId equals lo.Id
+                                         select new GetParticipantWithGroupName
+                                         {
+                                             Id = pr.Id,
+                                             FullName = pr.FullName,
+                                             Email = pr.Email, 
+                                             Phone = pr.Phone,
+                                             CreatedAt = pr.CreatedAt,
+                                             GroupId = pr.GroupId,
+                                             GroupName = gr.GroupNick,
+                                             LocationId = pr.LocationId,
+                                             LocationName = lo.Title 
+
+                                         }).ToListAsync();
+                return new Response<List<GetParticipantWithGroupName>>(participant);
+            }
+            catch (Exception ex)
+            {
+                return new Response<List<GetParticipantWithGroupName>>(System.Net.HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace Infrastructure.Services
         Task<Response<Challenge>> GetChallengeById(int id);
         Task<Response<List<GetChallengeDto>>> GetChallenges();
         Task<Response<AddChallengeDto>> UpdateChallenge(AddChallengeDto group);
+
     }
 }

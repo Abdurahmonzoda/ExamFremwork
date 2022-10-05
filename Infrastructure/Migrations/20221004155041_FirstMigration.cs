@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class FirstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,7 +50,7 @@ namespace Infrastructure.Migrations
                     ChallangeId = table.Column<int>(type: "integer", nullable: false),
                     NeededMember = table.Column<bool>(type: "boolean", nullable: false),
                     TeamSlogan = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,7 +72,7 @@ namespace Infrastructure.Migrations
                     FullName = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
                     Email = table.Column<string>(type: "text", nullable: true),
                     Phone = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     GroupId = table.Column<int>(type: "integer", nullable: false),
                     LocationId = table.Column<int>(type: "integer", nullable: false)
                 },

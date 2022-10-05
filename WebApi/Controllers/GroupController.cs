@@ -51,6 +51,12 @@ namespace WebApi.Controllers
             var group = await _groupService.DeleteGroup(id);
             return group;
         }
-    
-}
+        [HttpGet("WithChallengeName")]
+        public async Task<Response<List<GetGtoupWithChallengeNameDto>>> GetGroups()
+        {
+            var group = await _groupService.GetGroupWithChallengeName();
+            return group;
+        }
+
+    }
 }
