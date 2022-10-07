@@ -1,4 +1,5 @@
-﻿using Domain.Dto;
+﻿using AutoMapper;
+using Domain.Dto;
 using Domain.Entities;
 using Domain.Response;
 using Infrastructure.Context;
@@ -16,20 +17,19 @@ namespace Infrastructure.Services
     {
         private readonly DataContext _context;
 
-        public ChallengeService(DataContext context)
+        private readonly IMapper _mapper;
+
+        public ChallengeService(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
+
 
         public async Task<Response<List<GetChallengeDto>>> GetChallenges()
         {
-            var challenge = await _context.Challenges.Select(p => new GetChallengeDto()
-            {
-               Id = p.Id,
-               Title = p.Title,
-               Description = p.Description
-
-            }).ToListAsync();
+            var challenge = _mapper.Map<List<GetChallengeDto>>(await _context.Challenges.ToListAsync());
+           
             return new Response<List<GetChallengeDto>>(challenge);
         }
 
@@ -38,12 +38,7 @@ namespace Infrastructure.Services
         {
             try
             {
-                var challenge = new Challenge()
-                {
-                    Id = model.Id,
-                    Title = model.Title,
-                    Description = model.Description
-                };
+                var challenge = _mapper.Map<Challenge>(model);
                 await _context.Challenges.AddAsync(challenge);
                 await _context.SaveChangesAsync();
                 model.Id = challenge.Id;
@@ -57,7 +52,7 @@ namespace Infrastructure.Services
 
         public async Task<Response<Challenge>> GetChallengeById(int id)
         {
-            var find = await _context.Challenges.FindAsync(id);
+            var find = _mapper.Map<Challenge>( await _context.Challenges.FindAsync(id));
             return new Response<Challenge>(find);
         }
 
@@ -109,14 +104,7 @@ namespace Infrastructure.Services
                         Title = ch.Title,
                         Groups = (from g in _context.Groups
                                   where g.ChallangeId == ch.Id
-                                  select new GetGroupDto()
-                                  {
-                                      ChallangeId = g.ChallangeId,
-                                      GroupNick = g.GroupNick,
-                                      NeededMember = g.NeededMember,
-                                      TeamSlogan = g.TeamSlogan,
-                                      Id = g.Id
-                                  }).ToList(),
+                                  select _mapper.Map<GetGroupDto>(g)).ToList()
 
                     }).ToListAsync();
 
@@ -128,8 +116,6 @@ namespace Infrastructure.Services
             }
         }
 
-
-
-
+      
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Dto;
+﻿using AutoMapper;
+using Domain.Dto;
 using Domain.Entities;
 using Domain.Response;
 using Infrastructure.Context;
@@ -15,22 +16,17 @@ namespace Infrastructure.Services
     {
         private readonly DataContext _context;
 
-        public GroupService(DataContext context)
+        private readonly IMapper _mapper;
+
+        public GroupService(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Response<List<GetGroupDto>>> GetGroups()
         {
-            var group = await _context.Groups.Select(p => new GetGroupDto()
-            {
-                Id = p.Id,
-                GroupNick = p.GroupNick,
-                ChallangeId=p.ChallangeId,
-                NeededMember=p.NeededMember,
-                TeamSlogan=p.TeamSlogan
-
-            }).ToListAsync();
+            var group =  _mapper.Map<List<GetGroupDto>>(await _context.Groups.ToListAsync());
             return new Response<List<GetGroupDto>>(group);
         }
 
@@ -39,14 +35,7 @@ namespace Infrastructure.Services
         {
             try
             {
-                var group = new Group()
-                {
-                    Id = model.Id,
-                    GroupNick = model.GroupNick,
-                    ChallangeId = model.ChallangeId,
-                    NeededMember = model.NeededMember,
-                    TeamSlogan = model.TeamSlogan
-                };
+                var group = _mapper.Map<Group>(model);
                 await _context.Groups.AddAsync(group);
                 await _context.SaveChangesAsync();
                 model.Id = group.Id;
@@ -139,15 +128,7 @@ namespace Infrastructure.Services
                                               TeamSlogan = gr.TeamSlogan,
                                               Participants = (from pr in _context.Participants
                                                               where gr.Id == pr.GroupId
-                                                              select new GetParticipantDto()
-                                                              {
-                                                                  Id = pr.Id,
-                                                                  FullName = pr.FullName,
-                                                                  Email = pr.Email,
-                                                                  Phone = pr.Phone,
-                                                                  GroupId = pr.GroupId,
-                                                                  LocationId = pr.LocationId
-                                                              }).ToList()
+                                                              select _mapper.Map<GetParticipantDto>(pr)).ToList()
                                           }).ToListAsync();
                 return new Response<List<GetGroupWithParticipants>>(participants);
             }

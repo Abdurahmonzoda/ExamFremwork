@@ -1,4 +1,5 @@
-﻿using Domain.Dto;
+﻿using AutoMapper;
+using Domain.Dto;
 using Domain.Entities;
 using Domain.Response;
 using Infrastructure.Context;
@@ -15,19 +16,18 @@ namespace Infrastructure.Services
     {
         private readonly DataContext _context;
 
-        public LocationService(DataContext context)
+        private readonly IMapper _mapper;
+        public LocationService(DataContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
+
         }
+
 
         public async Task<Response<List<GetLocationDto>>> GetLocations()
         {
-            var locations = await _context.Locations.Select(l => new GetLocationDto()
-            {
-                Description = l.Description,
-                Id = l.Id,
-                Title = l.Title
-            }).ToListAsync();
+            var locations = _mapper.Map<List<GetLocationDto>>(await _context.Locations.ToListAsync());
             return new Response<List<GetLocationDto>>(locations);
         }
 
@@ -36,11 +36,7 @@ namespace Infrastructure.Services
         {
             try
             {
-                var location = new Location()
-                {
-                    Description = model.Description,
-                    Title = model.Title
-                };
+                var location = _mapper.Map<Location>(model);
                 await _context.Locations.AddAsync(location);
                 await _context.SaveChangesAsync();
                 model.Id = location.Id;

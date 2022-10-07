@@ -1,4 +1,5 @@
-﻿using Domain.Dto;
+﻿using AutoMapper;
+using Domain.Dto;
 using Domain.Entities;
 using Domain.Response;
 using Infrastructure.Context;
@@ -18,23 +19,16 @@ namespace Infrastructure.Services
     {
         private readonly DataContext _context;
 
-        public ParticipantService(DataContext context)
+        private readonly IMapper _mapper;
+        public ParticipantService(DataContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Response<List<GetParticipantDto>>> GetParticipants()
         {
-            var participant = await _context.Participants.Select(p => new GetParticipantDto()
-            {
-                Id = p.Id,
-                FullName = p.FullName,
-                Email = p.Email,
-                Phone = p.Phone,
-                GroupId = p.GroupId,
-                LocationId = p.LocationId
-
-            }).ToListAsync();
+            var participant = _mapper.Map<List<GetParticipantDto>>(await _context.Participants.ToListAsync());
             return new Response<List<GetParticipantDto>>(participant);
         }
 
@@ -43,15 +37,7 @@ namespace Infrastructure.Services
         {
             try
             {
-                var participant = new Participant()
-                {
-                    Id = model.Id,
-                    FullName = model.FullName,
-                    Email = model.Email,
-                    Phone = model.Phone,
-                    GroupId = model.GroupId,
-                    LocationId = model.LocationId
-                };
+                var participant =_mapper.Map<Participant>(model);
                 await _context.Participants.AddAsync(participant);
                 await _context.SaveChangesAsync();
                 model.Id = participant.Id;
